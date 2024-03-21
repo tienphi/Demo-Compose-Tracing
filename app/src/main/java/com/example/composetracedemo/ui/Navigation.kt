@@ -24,13 +24,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.composetracedemo.ui.dataitemtype.DataItemTypeScreen
+import com.example.composetracedemo.ui.demo.DemoScreen
 
 @Composable
 fun MainNavigation() {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "main") {
+    NavHost(navController = navController, startDestination = "demo") {
         composable("main") { DataItemTypeScreen(modifier = Modifier.padding(16.dp)) }
-        // TODO: Add more destinations
+        composable("demo") { DemoScreen(modifier = Modifier.padding(16.dp)) }
     }
 }
