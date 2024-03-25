@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.trace
 import com.example.composetracedemo.ui.ComponentPreviews
 import com.example.composetracedemo.ui.demo.components.Counter
 import com.example.composetracedemo.ui.theme.MyApplicationTheme
@@ -59,6 +60,7 @@ fun DemoScreen(
         // Derives from counter, increase only when counter is even
         val counterEven by remember(counter) {
             derivedStateOf {
+                BigObject()
                 if (counter.rem(2) == 0) {
                     counter / 2
                 } else {
@@ -83,6 +85,14 @@ fun DemoScreen(
                 style = MaterialTheme.typography.titleMedium,
                 fontSize = 40.sp
             )
+        }
+    }
+}
+
+class BigObject {
+    init {
+        trace("BigObject") {
+            List(250000) { it }
         }
     }
 }
