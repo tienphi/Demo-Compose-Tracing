@@ -116,6 +116,12 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     // Tooling
     debugImplementation(libs.androidx.compose.ui.tooling)
+
+    // Tracing
+    implementation(libs.androidx.compose.runtime.tracing)
+    implementation(libs.androidx.tracing.perfetto)
+    implementation(libs.androidx.tracing.perfetto.binary)
+
     // Instrumented tests
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
