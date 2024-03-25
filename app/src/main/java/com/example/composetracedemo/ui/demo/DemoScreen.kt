@@ -28,15 +28,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.trace
 import com.example.composetracedemo.ui.ComponentPreviews
 import com.example.composetracedemo.ui.demo.components.Counter
 import com.example.composetracedemo.ui.theme.MyApplicationTheme
+import kotlin.random.Random
 
 @Composable
 fun DemoScreen(
@@ -49,12 +57,33 @@ fun DemoScreen(
     ) {
         var counter by remember { mutableIntStateOf(0) }
 
+        var color by remember { mutableStateOf(Color.Transparent) }
+
         // Counter One
-        Counter(
-            modifier = Modifier.padding(8.dp),
-            name = "One",
-            value = counter
-        )
+        trace("CounterOne") {
+            Counter(
+                modifier = Modifier
+                    .layout { measurable, constraints ->
+                        trace("CounterOne:measure") {
+                            val placeable = measurable.measure(constraints)
+                            layout(placeable.width, placeable.height) {
+                                trace("CounterOne:placement") {
+                                    placeable.place(IntOffset.Zero)
+                                }
+                            }
+                        }
+                    }
+                    .drawBehind {
+                        trace("CounterOne:draw") {
+                            drawRect(color)
+                        }
+                    }
+                    .padding(8.dp),
+                name = "One",
+                value = counter
+            )
+        }
+
 
         // Derives from counter, increase only when counter is even
         val counterEven by remember(counter) {
@@ -68,15 +97,33 @@ fun DemoScreen(
         }
 
         // Counter Two, which increase only when counter is even
-        Counter(
-            modifier = Modifier.padding(8.dp),
-            name = "Two",
-            value = counterEven
-        )
+        trace("CounterTwo"){
+            Counter(
+                modifier = Modifier
+                    .layout { measurable, constraints ->
+                        trace("Counter:measure") {
+                            val placeable = measurable.measure(constraints)
+                            layout(placeable.width, placeable.height) {
+                                placeable.place(IntOffset.Zero)
+                            }
+                        }
+                    }
+                    .padding(8.dp),
+                name = "Two",
+                value = counterEven
+            )
+        }
 
         Button(
             modifier = Modifier.padding(8.dp),
-            onClick = { counter++ }
+            onClick = {
+                counter++
+                color = Color(
+                    Random.nextInt(0, 256),
+                    Random.nextInt(0, 256),
+                    Random.nextInt(0, 256)
+                )
+            }
         ) {
             Text(
                 text = "Increase",
